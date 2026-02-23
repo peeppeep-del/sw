@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SATO REN : CONFIDENTIAL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=Dancing+Script:wght@600&family=Gowun+Batang&family=IBM+Plex+Mono:wght@400;600&family=Shippori+Mincho:wght@400;700&family=Zen+Kurenaido&family=Song+Myung&family=Noto+Sans+KR:wght@300;400;500&family=Yuji+Syuku&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #050505;
+            --paper-color: #e8e4d9;
+            --ink-color: #1a1a1a;
+            --accent-red: #900000;
+            --text-gold: #bfa376;
+            
+            --font-jp-doc: 'Shippori Mincho', serif;
+            --font-jp-hand: 'Zen Kurenaido', sans-serif;
+            --font-user-sign: 'Yuji Syuku', serif;
+            --font-kr-sub: 'Noto Sans KR', sans-serif;
+            --font-code: 'IBM Plex Mono', monospace;
+            --font-title: 'Bodoni Moda', serif;
+            --font-body: 'Song Myung', serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); font-family: var(--font-body); overflow-x: hidden; }
+
+        /* === 1. 계약서 섹션 === */
+        #contract-section {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+            background: radial-gradient(circle at center, #1f1f1f 0%, #000 100%);
+            z-index: 10; position: relative;
+            transition: transform 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045), opacity 0.8s ease;
+        }
+        .paper {
+            background-color: var(--paper-color);
+            background-image: 
+                linear-gradient(175deg, transparent 40%, rgba(0,0,0,0.06) 45%, rgba(0,0,0,0.03) 50%, transparent 55%),
+                linear-gradient(5deg, transparent 60%, rgba(0,0,0,0.04) 65%, transparent 70%),
+                url("https://www.transparenttextures.com/patterns/cream-paper.png");
+            width: 100%; max-width: 620px; padding: 60px 50px;
+            box-shadow: 5px 20px 60px rgba(0,0,0,0.8);
+            font-family: var(--font-jp-doc); color: var(--ink-color);
+            position: relative; transform: rotate(-0.5deg);
+        }
+        .paper::before {
+            content: 'TOP SECRET'; position: absolute; top: 30px; right: 30px;
+            border: 4px solid var(--accent-red); color: var(--accent-red); padding: 5px 15px;
+            font-family: var(--font-code); font-weight: bold; font-size: 1.2rem;
+            transform: rotate(12deg); opacity: 0.5; letter-spacing: 2px;
+            mask-image: url("https://www.transparenttextures.com/patterns/grunge-wall.png"); pointer-events: none;
+        }
+        .contract-header { text-align: center; border-bottom: 2px solid var(--ink-color); padding-bottom: 25px; margin-bottom: 35px; }
+        .contract-header h1 { font-size: 1.6rem; letter-spacing: 1px; font-weight: 900; margin-bottom: 8px;}
+        .contract-header .sub-header-kr { font-family: var(--font-kr-sub); font-size: 0.85rem; color: #555; font-weight: 500; margin-bottom: 12px; display: block;}
+        .contract-header p { font-family: var(--font-code); font-size: 0.7rem; color: #666; letter-spacing: 1px;}
+        .clause { margin-bottom: 35px; padding-left: 10px; border-left: 2px solid rgba(0,0,0,0.05); }
+        .clause-num { font-weight: 900; margin-right: 5px; }
+        .jp-text { font-size: 1rem; line-height: 1.6; font-weight: 600; color: #111; margin-bottom: 5px; }
+        .kr-sub { font-family: var(--font-kr-sub); font-size: 0.8rem; color: #666; line-height: 1.4; display: block; margin-bottom: 8px; }
+        .ren-note-wrapper { position: relative; display: inline-block; margin-top: 5px; transform: rotate(-1deg); cursor: help; }
+        .ren-note-text { font-family: var(--font-jp-hand); color: var(--accent-red); font-size: 1.3rem; line-height: 1.2; border-bottom: 1px dotted rgba(138, 11, 11, 0.3); }
+        .ren-note-wrapper::after { content: attr(data-translate); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(10px); background: #1a1a1a; color: #fff; padding: 8px 12px; border-radius: 4px; font-family: var(--font-kr-sub); font-size: 0.75rem; white-space: nowrap; opacity: 0; pointer-events: none; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; }
+        .ren-note-wrapper:hover::after { opacity: 1; transform: translateX(-50%) translateY(-5px); }
+        .sign-area { margin-top: 70px; display: flex; justify-content: flex-end; align-items: flex-end; padding-right: 20px; }
+        .sign-block { text-align: left; position: relative; }
+        .sign-label { font-family: var(--font-jp-doc); font-size: 0.9rem; color: #111; font-weight: bold; margin-right: 10px; }
+        .sign-line { display: inline-block; width: 200px; border-bottom: 1px solid #333; position: relative; cursor: pointer; transition: border-color 0.3s; }
+        .sign-line:hover { border-bottom: 2px solid var(--accent-red); }
+        .sign-placeholder { position: absolute; top: 5px; left: 5px; font-family: var(--font-kr-sub); font-size: 0.7rem; color: #999; pointer-events: none; opacity: 1; transition: opacity 0.2s; }
+        .real-signature { font-family: var(--font-user-sign); font-size: 1.8rem; color: #0a1f42; position: absolute; bottom: 5px; left: 30px; transform: rotate(-2deg); opacity: 0; transform-origin: center; text-shadow: 0 0 2px rgba(10, 31, 66, 0.3); filter: blur(0.4px); mix-blend-mode: multiply; }
+        .sign-line.signed .real-signature { animation: signWrite 0.6s ease forwards; }
+        .sign-line.signed .sign-placeholder { opacity: 0; }
+        @keyframes signWrite { 0% { opacity: 0; clip-path: inset(0 100% 0 0); } 100% { opacity: 0.9; clip-path: inset(0 0 0 0); } }
+        .stamp { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(2); width: 180px; height: 180px; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; z-index: 20; mix-blend-mode: multiply; }
+        .stamp-inner { width: 100%; height: 100%; border: 6px solid var(--accent-red); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--accent-red); font-family: var(--font-code); text-align: center; mask-image: url("https://www.transparenttextures.com/patterns/grunge-wall.png"); -webkit-mask-image: url("https://www.transparenttextures.com/patterns/grunge-wall.png"); }
+        .stamp-text-main { font-size: 1.8rem; font-weight: 900; line-height: 1; margin-bottom: 5px; letter-spacing: -1px; }
+        .stamp-text-sub { font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; border-top: 2px solid var(--accent-red); padding-top: 5px; margin-top: 5px;}
+        .stamp.active { animation: stampIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes stampIn { 0% { transform: translate(-50%, -50%) scale(4); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1) rotate(-12deg); opacity: 0.85; } }
+
+        /* === 2. 프로필 섹션 === */
+        #profile-section { display: none; opacity: 0; min-height: 100vh; color: #ccc; padding: 80px 20px; background: #050505; }
+        .profile-container { max-width: 900px; margin: 0 auto; border-left: 1px solid rgba(197, 160, 89, 0.3); padding-left: 50px; padding-top: 40px; }
+        .profile-img-wrapper { width: 200px; height: 300px; overflow: hidden; margin-bottom: 35px; border: 1px solid #333; position: relative; }
+        .profile-img-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.1) brightness(0.9); transition: all 0.5s ease; }
+        .profile-img-wrapper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(to bottom, transparent, #050505); }
+        .profile-img-wrapper:hover img { filter: grayscale(0%) contrast(1); }
+
+        .name-wrapper { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 60px; }
+        .name-text { display: flex; align-items: baseline; gap: 20px; }
+        .hero-title { font-family: var(--font-title); font-size: 5rem; color: #fff; margin-bottom: 0; line-height: 1; letter-spacing: -3px; }
+        .sub-title { font-family: var(--font-code); font-size: 1rem; letter-spacing: 4px; color: var(--text-gold); margin: 0; text-transform: uppercase; font-weight: 600; }
+        
+        /* CD 플레이어 버튼 */
+        .cd-btn {
+            width: 50px; height: 50px; border-radius: 50%; 
+            background: linear-gradient(135deg, #111, #333);
+            border: 2px solid var(--text-gold);
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; position: relative;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.2);
+            transition: all 0.3s ease; animation: slowSpin 10s linear infinite;
+        }
+        .cd-btn::before {
+            content: ''; position: absolute; width: 15px; height: 15px;
+            background: #050505; border-radius: 50%; border: 1px solid #555;
+        }
+        .cd-btn:hover { transform: scale(1.1); box-shadow: 0 0 25px rgba(197, 160, 89, 0.5); border-color: #fff; }
+        @keyframes slowSpin { 100% { transform: rotate(360deg); } }
+
+        .quote-container { margin: 80px 0; text-align: center; border-top: 1px solid #222; border-bottom: 1px solid #222; padding: 50px 0; position: relative; cursor: pointer; min-height: 120px; display: flex; justify-content: center; align-items: center; }
+        .quote-jp { font-family: var(--font-jp-doc); font-size: 1.5rem; line-height: 1.8; color: #fff; opacity: 0.9; transition: opacity 0.4s ease, filter 0.4s ease; position: absolute; width: 100%; }
+        .quote-kr { font-family: var(--font-body); font-size: 1.2rem; line-height: 1.6; color: var(--accent-red); opacity: 0; transform: translateY(10px); transition: all 0.4s ease; position: absolute; width: 100%; font-weight: 500; }
+        .quote-container:hover .quote-jp { opacity: 0.1; filter: blur(2px); }
+        .quote-container:hover .quote-kr { opacity: 1; transform: translateY(0); }
+
+        .info-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 70px; margin-bottom: 90px; }
+        .stat-box { margin-bottom: 40px; }
+        .stat-box h3 { font-family: var(--font-title); color: var(--text-gold); font-size: 1.3rem; margin-bottom: 18px; font-style: italic; border-bottom: 1px solid #222; padding-bottom: 5px; display: inline-block; }
+        .stat-box p { font-family: var(--font-body); font-size: 1.05rem; line-height: 1.8; color: #bbb; font-weight: 300; }
+        .highlight { color: #fff; font-weight: 600; margin-right: 5px; }
+
+        .timeline-container { position: relative; padding-left: 25px; border-left: 1px solid rgba(197, 160, 89, 0.3); margin-top: 25px; }
+        .timeline-item { position: relative; margin-bottom: 35px; }
+        .timeline-item::before { content: ''; position: absolute; left: -30px; top: 6px; width: 9px; height: 9px; background: #222; border: 1px solid var(--text-gold); border-radius: 50%; transition: all 0.3s ease; z-index: 1; }
+        .timeline-item.d-day::before { background: var(--accent-red); border-color: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); }
+        .log-date { display: block; color: var(--text-gold); font-family: var(--font-code); font-size: 0.85rem; margin-bottom: 6px; letter-spacing: 1px;}
+        .log-content { color: #aaa; font-size: 0.95rem; }
+
+        .article-popup { position: absolute; top: -10px; right: 110%; left: 20px; top: 25px; right: auto; width: 260px; background-color: #e8e4d9; background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png"); padding: 15px; border: 1px solid #999; box-shadow: 10px 10px 30px rgba(0,0,0,0.8); transform: rotate(-2deg) scale(0.9); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; color: #111; }
+        .article-header { font-family: var(--font-jp-doc); font-size: 1.2rem; font-weight: 900; border-bottom: 3px double #333; padding-bottom: 10px; margin-bottom: 10px; line-height: 1.3; color: #000; }
+        .article-body { font-family: var(--font-body); font-size: 0.8rem; line-height: 1.6; color: #333; }
+        .article-badge { background: #d00; color: #fff; font-size: 0.6rem; padding: 2px 6px; font-weight: bold; display: inline-block; margin-bottom: 5px; font-family: sans-serif; }
+        .timeline-item.d-day { cursor: pointer; }
+        .timeline-item.d-day:hover .article-popup { opacity: 1; transform: rotate(0deg) scale(1); pointer-events: auto; z-index: 101; }
+
+        #audio-control { position: fixed; bottom: 20px; right: 20px; z-index: 1000; background: rgba(0,0,0,0.5); border: 1px solid #444; color: #ccc; padding: 8px 15px; font-family: var(--font-code); font-size: 0.7rem; cursor: pointer; border-radius: 20px; transition: all 0.3s ease; backdrop-filter: blur(5px); }
+        #audio-control:hover { background: rgba(197, 160, 89, 0.2); border-color: var(--text-gold); color: #fff; }
+
+        /* SNS 모달 CSS */
+        #evidence-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .phone-frame { width: 320px; max-height: 85vh; overflow-y: auto; background: #000; border: 1px solid #333; border-radius: 30px; padding: 20px; box-shadow: 0 0 50px rgba(139, 0, 0, 0.3); position: relative; font-family: -apple-system, sans-serif; scrollbar-width: none; }
+        .phone-frame::-webkit-scrollbar { display: none; }
+        .cracked-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://www.transparenttextures.com/patterns/cracked-glass.png'); opacity: 0.4; pointer-events: none; z-index: 10; }
+        .sns-header { display: flex; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .sns-avatar { width: 35px; height: 35px; background: #333; border-radius: 50%; margin-right: 10px; }
+        .sns-id { color: #fff; font-weight: bold; font-size: 0.9rem; }
+        .sns-id span { display: block; font-size: 0.7rem; color: #666; font-weight: normal; }
+        .sns-image { width: 100%; height: 280px; background-color: #111; background-image: url('https://i.postimg.cc/15g5Tp0Z/1.webp'); background-size: cover; background-position: top center; filter: grayscale(80%) contrast(1.2); margin-bottom: 15px; }
+        .sns-actions { display: flex; gap: 15px; margin-bottom: 10px; align-items: center; }
+        .sns-icon-svg { width: 24px; height: 24px; cursor: pointer; transition: transform 0.2s; }
+        .sns-icon-svg:hover { transform: scale(1.1); }
+        .icon-heart-filled { fill: #ff3040; }
+        .icon-plane { fill: #fff; }
+        .sns-content { color: #eee; font-size: 0.85rem; line-height: 1.5; }
+        .sns-content strong { margin-right: 5px; }
+        .sns-text-jp { font-weight: 300; margin-bottom: 5px; display: block; }
+        .sns-text-kr { color: #888; font-size: 0.75rem; display: block; margin-top: 5px;}
+        .sns-date { color: #555; font-size: 0.7rem; margin-top: 10px; display: block; text-transform: uppercase;}
+        .close-btn { margin-top: 20px; color: #fff; background: transparent; border: 1px solid #555; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: all 0.3s; width: 100%; }
+        .close-btn:hover { background: #fff; color: #000; }
+        .evidence-link { color: var(--accent-red); text-decoration: underline; cursor: pointer; font-weight: bold; }
+        .evidence-link:hover { background: rgba(139, 0, 0, 0.1); }
+        .floating-heart { position: absolute; color: #ff3b30; font-size: 1.5rem; pointer-events: none; animation: floatUp 1s ease-out forwards; z-index: 20; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translateY(-100px) scale(1.5) rotate(20deg); opacity: 0; } }
+        .ren-dm-popup { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; background: rgba(30, 30, 30, 0.95); border: 1px solid #444; border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 100; text-align: center; }
+        .ren-dm-popup.show { display: block; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+        .dm-profile { width: 50px; height: 50px; border-radius: 50%; margin: 0 auto 10px; background: #333; }
+        .dm-sender { color: #fff; font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
+        .dm-message { color: #ccc; font-size: 0.8rem; line-height: 1.4; margin-bottom: 15px; }
+        .dm-close { background: var(--accent-red); color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 0.7rem; }
+
+        /* === [NEW/FIX] 뮤직 플레이어 모달 === */
+        #music-player-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            z-index: 10000; justify-content: center; align-items: center;
+        }
+        
+        .music-player-container {
+            width: 340px; background: #111; border: 1px solid #333; border-radius: 20px;
+            padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            position: relative; text-align: center;
+            overflow: hidden; /* [FIX] 가사 오버레이가 둥근 테두리 밖으로 안 나가게 */
+        }
+        
+        .close-player-btn {
+            position: absolute; top: 15px; right: 15px; background: none; border: none;
+            color: #888; font-size: 1.5rem; cursor: pointer; transition: color 0.2s;
+            z-index: 110; /* [FIX] 가사가 덮여도 닫기 버튼은 누를 수 있게 위로 올림 */
+        }
+        .close-player-btn:hover { color: #fff; }
+        
+        /* 앨범 전체 래퍼 */
+        .album-wrapper {
+            width: 260px; height: 260px; margin: 0 auto 25px;
+            position: relative; cursor: pointer;
+            border-radius: 50%; 
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        /* 앨범 커버 (이것만 빙글빙글 돔) */
+        .album-cover-area {
+            width: 100%; height: 100%;
+            border-radius: 50%; background: linear-gradient(45deg, #1a1a1a, #2a2a2a, #0d0d0d);
+            border: 5px solid #050505; position: relative; 
+            box-shadow: inset 0 0 15px #000;
+            animation: spinCover 15s linear infinite; animation-play-state: paused;
+        }
+        .album-cover-area.playing { animation-play-state: running; }
+        @keyframes spinCover { 100% { transform: rotate(360deg); } }
+        
+        /* 중앙 라벨 */
+        .album-center-label {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80px; height: 80px; background: var(--accent-red);
+            border-radius: 50%; border: 3px solid #111;
+            display: flex; justify-content: center; align-items: center;
+            font-family: var(--font-code); color: #111; font-weight: bold; font-size: 0.7rem; text-align: center;
+            line-height: 1.2; z-index: 2;
+        }
+        .album-center-label::after {
+            content: ''; position: absolute; width: 12px; height: 12px; background: #000; border-radius: 50%;
+        }
+
+        /* [FIX] 가사 오버레이: 앨범 안이 아니라 플레이어 팝업 전체를 덮도록 변경 */
+        .lyrics-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 10, 0.92); /* 배경을 어둡게 */
+            backdrop-filter: blur(5px); /* 뒤에 LP판이 은은하게 비치도록 */
+            z-index: 100;
+            padding: 60px 20px 30px; /* 위쪽 여백을 줘서 닫기 버튼과 안 겹치게 */
+            opacity: 0; transition: opacity 0.3s; overflow-y: auto; scrollbar-width: none;
+            pointer-events: none; /* 평소엔 클릭 방해 금지 */
+            text-align: center;
+        }
+        .lyrics-overlay.show { opacity: 1; pointer-events: auto; cursor: pointer; } /* 클릭 시 닫히도록 커서 변경 */
+        
+        .lyrics-text { font-family: var(--font-body); font-size: 0.85rem; color: #ddd; line-height: 1.8; text-align: center; width: 100%; padding-bottom: 20px; }
+        .lyrics-text span.jp { display: block; color: #fff; font-family: var(--font-jp-doc); }
+        .lyrics-text span.kr { display: block; color: #999; font-size: 0.75rem; margin-bottom: 12px; }
+
+        /* 트랙 정보 */
+        .track-info-area { margin-bottom: 20px; }
+        #player-title { font-family: var(--font-title); font-size: 1.5rem; color: #fff; margin-bottom: 5px; }
+        
+        /* [NEW] 플레이어 서브 설명 글씨체 변경 (감성적인 Song Myung 폰트로 적용) */
+        #player-desc { 
+            font-family: var(--font-body); 
+            font-size: 0.9rem; 
+            color: rgba(191, 163, 118, 0.8); /* 골드 색상을 약간 부드럽게 */
+            letter-spacing: 0.5px;
+        }
+
+        /* 컨트롤러 */
+        .player-controls { display: flex; justify-content: center; align-items: center; gap: 25px; }
+        .control-btn {
+            background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+        }
+        .control-btn:hover { color: var(--text-gold); transform: scale(1.1); }
+        #play-btn { font-size: 2.2rem; }
+
+        @media (max-width: 768px) {
+            .paper { padding: 40px 25px; }
+            .hero-title { font-size: 3.5rem; }
+            .name-text { flex-direction: column; gap: 5px; }
+            .cd-btn { width: 40px; height: 40px; }
+            .info-grid { grid-template-columns: 1fr; gap: 40px;}
+            .profile-container { padding-left: 20px; border-left: none;}
+            .article-popup { width: 220px; left: -20px; z-index: 200; } 
+        }
+    </style>
+</head>
+<body>
+
+    <div id="evidence-modal" onclick="closeEvidence()">
+        <div class="phone-frame" id="phone-frame" onclick="event.stopPropagation()"> 
+            <div class="cracked-screen"></div>
+            
+            <div id="ren-dm" class="ren-dm-popup">
+                <div class="dm-profile" style="background-image: url('https://i.postimg.cc/G26nJrwZ/1.webp'); background-size: cover;"></div>
+                <div class="dm-sender">ren_archive_04</div>
+                <div class="dm-message">
+                    "通知うるせぇ。<br>調子に乗るなよ。"<br><br>
+                    <span style="color:#888;">(알림 시끄러워.<br>적당히 해라.)</span>
+                </div>
+                <button class="dm-close" onclick="closeDM()">확인</button>
+            </div>
+
+            <div class="sns-header">
+                <div class="sns-avatar"></div>
+                <div class="sns-id">ren_archive_04<br><span>Tokyo, Roppongi</span></div>
+            </div>
+            <div class="sns-image"></div>
+            <div class="sns-actions">
+                <svg class="sns-icon-svg icon-heart-filled" viewBox="0 0 24 24" onclick="clickHeart(event)">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                <svg class="sns-icon-svg icon-plane" viewBox="0 0 24 24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+            </div>
+            <div class="sns-content">
+                <strong>ren_archive_04</strong>
+                <span class="sns-text-jp">今日も "理想の彼氏" ごっこ、マジだる。<br>隣でキャンキャンうるせぇんだよな、この女。<br>ま、顔だけは良いし？ <br>新しいアクセサリーくらいにはなるか。<br>飽きたら秒で捨てるけど笑<br><br>#営業スマイル #耳障り #新しいオモチャ</span>
+                <span class="sns-text-kr">(번역: 오늘도 '국민 남친' 놀이, 진짜 개피곤하네.<br>옆에서 꽥꽥대는데 존나 시끄럽다고, 이 여자.<br>뭐, 얼굴 하나는 봐줄 만하니까?<br>새 악세서리 정도는 되겠네.<br>질리면 1초 만에 갖다 버릴 거지만 ㅋ<br><br>#비즈니스미소 #귀아파 #새장난감)</span>
+                <span class="sns-date">2 WEEKS AGO • SEE TRANSLATION</span>
+            </div>
+            <button class="close-btn" onclick="closeEvidence()">CLOSE EVIDENCE</button>
+        </div>
+    </div>
+
+    <div id="music-player-modal" onclick="closePlayer()">
+        <div class="music-player-container" onclick="event.stopPropagation()">
+            <button class="close-player-btn" onclick="closePlayer()">×</button>
+            
+            <div class="album-wrapper" onclick="toggleLyrics()">
+                <div class="album-cover-area" id="album-cover">
+                    <div class="album-center-label" id="album-label">SATO<br>REN</div>
+                </div>
+            </div>
+
+            <div class="track-info-area">
+                <h3 id="player-title">Plastic Smile</h3>
+                <p id="player-desc">국민 남친 전성기 시절 타이틀곡</p>
+            </div>
+
+            <div class="player-controls">
+                <button class="control-btn" onclick="prevTrack()">⏮</button>
+                <button class="control-btn" id="play-btn" onclick="togglePlay()">▶</button>
+                <button class="control-btn" onclick="nextTrack()">⏭</button>
+            </div>
+
+            <div class="lyrics-overlay" id="lyrics-overlay" onclick="toggleLyrics()">
+                <div class="lyrics-text" id="lyrics-content">
+                    </div>
+            </div>
+
+            <audio id="track-audio" src=""></audio>
+        </div>
+    </div>
+
+    <audio id="bgm" loop>
+        <source src="bgm.mp3" type="audio/mp3">
+    </audio>
+    <button id="audio-control" onclick="toggleAudio()">🔊 MUSIC ON</button>
+
+    <section id="contract-section">
+        <div class="paper">
+            <div class="contract-header">
+                <h1>秘密保持および偽装結婚契約書</h1>
+                <span class="sub-header-kr">비밀 유지 및 위장 결혼 계약서</span>
+                <p>DOCUMENT NO. 2025-SW-4501 | CONFIDENTIAL</p>
+            </div>
+            <div class="content">
+                <div class="clause">
+                    <p class="jp-text"><span class="clause-num">第1条 [目的]</span> 本契約は、甲（佐藤蓮）のイメージ刷新および乙の経済的利益のため、1年間法的な夫婦関係を演じることを目的とする。</p>
+                    <span class="kr-sub">제1조 [목적] 본 계약은 '갑(사토 렌)'의 이미지 쇄신 및 '을(귀하)'의 경제적 이익을 위하여, 1년 간 법적인 부부 관계를 연기하는 것을 목적으로 한다.</span>
+                </div>
+                <div class="clause">
+                    <p class="jp-text"><span class="clause-num">第3条 [甲の義務]</span> 契約金5億円を一括で支払い、公の場では完璧な愛情表現を演じるものとする。</p>
+                    <span class="kr-sub">제3조 [갑의 의무] 계약금 5억 엔을 일시불로 지급하며, 공식 석상에서는 완벽한 애정 표현을 연기한다.</span>
+                    <div class="ren-note-wrapper" data-translate="연기 못하면 위약금 청구야. 똑바로 해.">
+                        <span class="ren-note-text">『演技ができなきゃ違約金だ。ちゃんとやれ。』</span>
+                    </div>
+                </div>
+                <div class="clause">
+                    <p class="jp-text"><span class="clause-num">第5条 [特約]</span> 相互の恋愛感情、および私的な肉体関係は一切禁止とする。</p>
+                    <span class="kr-sub">제5조 [특약] 상호 연애 감정 및 사적 육체 관계는 일체 금지한다.</span>
+                    <div class="ren-note-wrapper" data-translate="내 방 근처엔 얼씬도 하지 마.">
+                        <span class="ren-note-text">『俺の部屋の近くには寄るな。』</span>
+                    </div>
+                </div>
+                <div class="clause">
+                    <p class="jp-text"><span class="clause-num">第6条 [破棄]</span> 秘密漏洩、または「真実の愛」により演技が不可能と判断された場合、直ちに破棄する。</p>
+                    <span class="kr-sub">제6조 [파기] 비밀 유출 혹은 '진짜 사랑'으로 인해 연기가 불가능하다고 판단되는 그 즉시 파기한다.</span>
+                </div>
+            </div>
+            <div class="sign-area">
+                <div class="sign-block">
+                    <span class="sign-label">乙 (署名):</span>
+                    <div class="sign-line" onclick="signContract(this)">
+                        <span class="sign-placeholder">クリックして署名 (Click to Sign)</span>
+                        <span class="real-signature">佐藤</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="stamp" id="stamp">
+            <div class="stamp-inner">
+                <span class="stamp-text-main">契約<br>締結</span>
+                <span class="stamp-text-sub">CONFIDENTIAL</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="profile-section">
+        <div class="profile-container">
+            
+            <div class="profile-img-wrapper">
+                <img src="https://i.postimg.cc/G26nJrwZ/1.webp" alt="Sato Ren Profile">
+            </div>
+
+            <div class="name-wrapper">
+                <div class="name-text">
+                    <h1 class="hero-title">佐藤 蓮</h1>
+                    <p class="sub-title">Sato Ren</p>
+                </div>
+                <div class="cd-btn" onclick="openPlayer()" title="Secret Music Archive">
+                    </div>
+            </div>
+
+            <div class="quote-container" ontouchstart="">
+                <p class="quote-jp">"愛？ 笑わせるな。 これは50億のビジネスだ。<br>だから頼む... 俺の前で泣く演技はやめてくれ。"</p>
+                <p class="quote-kr">"사랑? 웃기지 마. 이건 50억짜리 비즈니스야.<br>그러니 제발... 내 앞에서 우는 연기는 집어치워."</p>
+            </div>
+
+            <div class="info-grid">
+                <div class="col-left">
+                    <div class="stat-box">
+                        <h3>PROFILE</h3>
+                        <p>
+                            <span class="highlight">나이:</span> 28세 (1997.02.14)<br>
+                            <span class="highlight">직업:</span> 배우 겸 가수 (現 활동 중단)<br>
+                            <span class="highlight">외형:</span> 185cm | 신경질적으로 흐트러진 갈발 | 날카로운 흑갈안 | 우측 눈 밑 점<br>
+                            <span class="highlight">체향:</span> Top 비 & 블랙페퍼 | Middle 담배 & 다크초콜릿 | Base 시더우드 & 머스크<br>
+                            <span class="highlight">거주:</span> 롯폰기 펜트하우스 4501호
+                        </p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>PERSONALITY</h3>
+                        <p>#ISTP #4w5 #sp/sx<br>#냉소적 #자기파괴적<br>#신경과민 #경계심강한</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>TMI</h3>
+                        <p>- 만성 불면증 (수면제 의존, 3시간 미만 수면)<br>- 왼손잡이 (교정되었으나 무의식 중 사용)<br>- 가끔 스스로를 "너"라 칭하며 자책함</p>
+                    </div>
+                </div>
+
+                <div class="col-right">
+                    <div class="stat-box">
+                        <h3>LIKES & DISLIKES</h3>
+                        <p>
+                            <span class="highlight">好:</span> 고요함, 익숙함(에스프레소, LP), 정밀함(시계, 코드), 관찰(사람, 풍경)<br><br>
+                            <span class="highlight">不好:</span> 예측 불가(돌발 상황, 신체 접촉), 감정 과잉(눈물, 동정), 빛&소음, 연민의 말
+                        </p>
+                    </div>
+
+                    <div class="stat-box">
+                        <h3>SCANDAL TIMELINE</h3>
+                        <div class="timeline-container">
+                            <div class="timeline-item">
+                                <span class="log-date">D-7</span>
+                                <div class="log-content">온라인 커뮤니티 '배우 S의 인성' 폭로글 게시</div>
+                            </div>
+                            <div class="timeline-item d-day">
+                                <span class="log-date" style="color: var(--accent-red); font-weight:bold;">D-DAY [EXCLUSIVE]</span>
+                                <div class="log-content">슈칸 분슌 [단독] "국민 남친의 두 얼굴" 보도</div>
+                                <div class="article-popup">
+                                    <span class="article-badge">週刊文春 SCOOP</span>
+                                    <div class="article-header">[단독] 사토 렌,<br>두 얼굴의 사랑과 배신</div>
+                                    <div class="article-body">
+                                        "넌 그냥 내 성공의 트로피였을 뿐..."<br>충격 녹취록 및 <span class="evidence-link" onclick="openEvidence()">SNS 비밀 계정(裏アカ)</span> 속 여성 품평 정황 공개.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <span class="log-date">D+3</span>
+                                <div class="log-content">前 여친 K양, "나는 그의 트로피였다" 인터뷰</div>
+                            </div>
+                            <div class="timeline-item">
+                                <span class="log-date">NOW</span>
+                                <div class="log-content">모든 활동 중단, 이미지 세탁용 위장 결혼 감행</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // === 1. 메인 BGM 컨트롤 ===
+        const audio = document.getElementById("bgm");
+        const audioBtn = document.getElementById("audio-control");
+        audio.volume = 0.5; 
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                audioBtn.innerHTML = "🔊 MUSIC ON";
+                audioBtn.style.opacity = "1";
+            } else {
+                audio.pause();
+                audioBtn.innerHTML = "🔇 MUSIC OFF";
+                audioBtn.style.opacity = "0.7";
+            }
+        }
+
+        // === 2. 계약서 애니메이션 ===
+        function signContract(element) {
+            if(element.classList.contains('signed')) return;
+            element.classList.add('signed');
+            audio.play().catch(e => console.log("Audio autoplay blocked"));
+
+            setTimeout(() => {
+                document.getElementById('stamp').classList.add('active');
+                setTimeout(() => {
+                    const contractSection = document.getElementById('contract-section');
+                    const profileSection = document.getElementById('profile-section');
+                    contractSection.style.transform = 'translateY(-100vh) rotate(-10deg) scale(0.8)';
+                    contractSection.style.opacity = '0';
+                    setTimeout(() => { contractSection.style.display = 'none'; }, 500);
+                    profileSection.style.display = 'block';
+                    setTimeout(() => { profileSection.style.opacity = '1'; }, 50);
+                    document.body.style.backgroundColor = '#000';
+                }, 1000);
+            }, 600); 
+        }
+
+        // === 3. SNS 모달 컨트롤 ===
+        function openEvidence() { document.getElementById('evidence-modal').style.display = 'flex'; }
+        function closeEvidence() { 
+            document.getElementById('evidence-modal').style.display = 'none';
+            document.getElementById('ren-dm').classList.remove('show');
+            heartCount = 0;
+        }
+
+        let heartCount = 0;
+        function clickHeart(event) {
+            event.stopPropagation();
+            createFloatingHeart(event);
+            heartCount++;
+            if (heartCount === 15) { document.getElementById('ren-dm').classList.add('show'); }
+        }
+
+        function createFloatingHeart(event) {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart'); heart.innerHTML = '❤️';
+            const phoneFrame = document.querySelector('.phone-frame');
+            const frameRect = phoneFrame.getBoundingClientRect();
+            const x = event.clientX - frameRect.left;
+            const y = event.clientY - frameRect.top;
+            heart.style.left = `${x}px`; heart.style.top = `${y}px`;
+            const randomX = (Math.random() - 0.5) * 40;
+            heart.style.transform = `translateX(${randomX}px)`;
+            phoneFrame.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 1000);
+        }
+
+        function closeDM() {
+            document.getElementById('ren-dm').classList.remove('show');
+            heartCount = 0; 
+        }
+
+        // === 4. 뮤직 플레이어 컨트롤 ===
+        const tracks = [
+            {
+                title: "Plastic Smile",
+                desc: "렌의 전성기 시절 타이틀곡",
+                src: "『Plastic Smile』.mp3", 
+                label: "TRACK<br>01",
+                lyrics: `
+                    <span class="jp">フラッシュの海を泳いで</span>
+                    <span class="kr">(플래시의 바다를 헤엄쳐서)</span>
+                    <span class="jp">君の待つ場所へ帰るよ</span>
+                    <span class="kr">(네가 기다리는 곳으로 돌아갈게)</span>
+                    <br>
+                    <span class="jp">Plastic Smile, 溶けない魔法</span>
+                    <span class="kr">(Plastic Smile, 풀리지 않는 마법)</span>
+                    <span class="jp">ショーウィンドウに映る恋人</span>
+                    <span class="kr">(쇼윈도에 비친 연인처럼)</span>
+                    <span class="jp">この仮面が外れるまで</span>
+                    <span class="kr">(이 가면이 벗겨질 때까지)</span>
+                `
+            },
+            {
+                title: "Undertone",
+                desc: "렌의 이면을 담은 수록곡",
+                src: "『Undertone』.mp3",
+                label: "TRACK<br>02",
+                lyrics: `
+                    <span class="jp">ざわめきを消して</span>
+                    <span class="kr">(웅성거림을 지우고)</span>
+                    <span class="jp">グラスの氷が溶ける音だけ</span>
+                    <span class="kr">(유리잔의 얼음이 녹는 소리만)</span>
+                    <br>
+                    <span class="jp">もっと深く、墜ちていく</span>
+                    <span class="kr">(조금 더 깊이, 추락해 가)</span>
+                    <span class="jp">本当の俺を見つけたら</span>
+                    <span class="kr">(진짜 내 모습을 발견한다면)</span>
+                    <span class="jp">君は逃げ出すだろうか</span>
+                    <span class="kr">(너는 도망치고 말까)</span>
+                `
+            },
+            {
+                title: "灰 (Ash)",
+                desc: "펜트하우스에서 홀로 부르는 미발표 곡",
+                src: "『灰』.mp3", 
+                label: "TRACK<br>03",
+                lyrics: `
+                    <span class="jp">眠れない夜、3時半</span>
+                    <span class="kr">(잠들지 못하는 밤, 3시 반)</span>
+                    <span class="jp">ショートホープの煙が目に染みる</span>
+                    <span class="kr">(쇼트 호프의 연기가 눈을 찌르네)</span>
+                    <br>
+                    <span class="jp">燃え尽きて、灰になって</span>
+                    <span class="kr">(하얗게 타들어가서, 재가 되어)</span>
+                    <span class="jp">風に吹かれて消えればいい</span>
+                    <span class="kr">(바람에 날려 사라지면 그만이야)</span>
+                    <span class="jp">隣の部屋、微かな寝息</span>
+                    <span class="kr">(옆방의, 희미한 숨소리)</span>
+                `
+            }
+        ];
+
+        let currentTrack = 0;
+        const trackAudio = document.getElementById('track-audio');
+        const playBtn = document.getElementById('play-btn');
+        const albumCover = document.getElementById('album-cover');
+
+        function openPlayer() {
+            document.getElementById('music-player-modal').style.display = 'flex';
+            loadTrack(currentTrack);
+        }
+
+        function closePlayer() {
+            document.getElementById('music-player-modal').style.display = 'none';
+        }
+
+        function loadTrack(index) {
+            const track = tracks[index];
+            document.getElementById('player-title').innerText = track.title;
+            document.getElementById('player-desc').innerText = track.desc;
+            document.getElementById('lyrics-content').innerHTML = track.lyrics;
+            document.getElementById('album-label').innerHTML = track.label;
+            
+            if(trackAudio.getAttribute('src') !== track.src) {
+                trackAudio.src = track.src;
+                trackAudio.load();
+                if(playBtn.innerText === '⏸') {
+                    trackAudio.play();
+                }
+            }
+        }
+
+        function togglePlay() {
+            if(trackAudio.paused) {
+                if(!audio.paused) toggleAudio(); 
+
+                trackAudio.play();
+                playBtn.innerText = '⏸';
+                albumCover.classList.add('playing');
+            } else {
+                trackAudio.pause();
+                playBtn.innerText = '▶';
+                albumCover.classList.remove('playing');
+            }
+        }
+
+        function nextTrack() {
+            currentTrack = (currentTrack + 1) % tracks.length;
+            const wasPlaying = !trackAudio.paused;
+            loadTrack(currentTrack);
+            if(wasPlaying) trackAudio.play();
+        }
+
+        function prevTrack() {
+            currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+            const wasPlaying = !trackAudio.paused;
+            loadTrack(currentTrack);
+            if(wasPlaying) trackAudio.play();
+        }
+
+        function toggleLyrics() {
+            document.getElementById('lyrics-overlay').classList.toggle('show');
+        }
+
+        trackAudio.addEventListener('ended', nextTrack);
+
+    </script>
+</body>
+</html>
